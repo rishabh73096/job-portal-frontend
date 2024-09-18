@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link ,useParams } from "react-router-dom";
 import axios from "axios";
 import { URL } from "./URL"; 
 
@@ -7,15 +7,23 @@ const Home = () => {
   const [jobSheets, setJobSheets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState(""); // State for search input
+  const [searchQuery, setSearchQuery] = useState(""); 
+  const { clientId } = useParams(); 
 
-  // Fetch all job sheets from the API
+
   useEffect(() => {
     const fetchJobSheets = async () => {
       try {
         const backendURL = URL();
         const response = await axios.get(`${backendURL}/NewJobSheet/getthedetails`);
-        setJobSheets(response.data);
+         setJobSheets(response.data);
+        console.log("API Response:", response.data);
+        // If the response is an array, set the state; otherwise, handle accordingly
+        if (Array.isArray(response.data)) {
+          setJobSheets(response.data);
+        } else {
+          setJobSheets([]); // Set an empty array if the response is not an array
+        }
         setLoading(false);
       } catch (err) {
         console.error("Error fetching job sheets:", err);
@@ -27,13 +35,12 @@ const Home = () => {
     fetchJobSheets();
   }, []);
 
-  // Handle delete functionality
-  const handleDelete = async (clientId) => {
+const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this job sheet?")) {
       try {
         const backendURL = URL();
         await axios.delete(`${backendURL}/NewJobSheet/getthedetails/${clientId}`);
-        setJobSheets(jobSheets.filter((job) => job._id !== clientId));
+        setJobSheets(jobSheets.filter((job) => job.clientId !== clientId));
         alert("Job Sheet deleted successfully!");
       } catch (err) {
         console.error("Error deleting job sheet:", err);
@@ -42,7 +49,7 @@ const Home = () => {
     }
   };
 
-  // Handle search
+
   const filteredJobSheets = jobSheets.filter((jobSheet) => {
     return (
       jobSheet.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -69,8 +76,8 @@ const Home = () => {
                 className="form-control"
                 placeholder="Search by Client Name or ID....."
                 aria-label="Search"
-                value={searchQuery} // Controlled input
-                onChange={(e) => setSearchQuery(e.target.value)} // Update search query on input change
+                value={searchQuery} 
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
               <div className="input-group-append ms-1">
                 <button className="btn btn-primary" type="button">
@@ -87,8 +94,8 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="container mt-3">
-        <table className="table table-striped">
+      <div className=" mt-3 ">
+        <table className="table table-striped p-2">
           <thead>
             <tr className="bg-primary text-white">
               <th>#</th>
@@ -98,6 +105,8 @@ const Home = () => {
               <th>Received Date</th>
               <th>Inventory Received</th>
               <th>Reported Issue</th>
+              <th>Assigned Technician</th>
+              <th>DeadLine</th>
               <th>Estimated Amount</th>
               <th>Status</th>
               <th>Actions</th>
@@ -107,22 +116,24 @@ const Home = () => {
             {filteredJobSheets.length > 0 ? (
               filteredJobSheets.map((jobSheet, index) => (
                 <tr key={jobSheet._id}>
-                  <td>{index + 1}</td> {/* Serial number */}
+                  <td>{index + 1}</td>
                   <td>{jobSheet.clientId}</td>
                   <td>{jobSheet.clientName}</td>
                   <td>{jobSheet.contactInfo}</td>
                   <td>{new Date(jobSheet.receivedDate).toLocaleDateString()}</td>
                   <td>{jobSheet.inventoryReceived}</td>
                   <td>{jobSheet.reportedIssue}</td>
+                  <td>{jobSheet.assignedTechnician}</td>
+                  <td>{jobSheet.deadline}</td>
                   <td>{jobSheet.estimatedAmount}</td>
                   <td>{jobSheet.status}</td>
-                  <td className="d-flex justify-content-between">
-                    <Link className="btn btn-info btn-sm" to="/Profile">
+                  <td className="d-flex justify-content-between flex-wrap ">
+                    <Link className="btn btn-info btn-sm" to="/Profile/:clientId">
                       View
                     </Link>
-                    <button className="btn btn-warning btn-sm">
+                    <Link className="btn btn-warning btn-sm m-1" to="/edit-employee/:clientId">
                       Edit
-                    </button>
+                    </Link>
                     <button
                       className="btn btn-danger btn-sm"
                       onClick={() => handleDelete(jobSheet._id)}

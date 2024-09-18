@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { URL } from "./URL";  // Make sure your URL export is correct
+import { URL } from "./URL"; // Make sure your URL export is correct
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -18,7 +18,7 @@ function Customer() {
     assignedTechnician: "",
     deadline: "",
     estimatedAmount: "",
-    status: ""
+    status: "",
   });
   const MySwal = withReactContent(Swal);
   const [error, setError] = useState({});
@@ -33,7 +33,7 @@ function Customer() {
     console.log("Form data:", formData);
 
     const data = new FormData();
-    
+
     // Append all the form fields to FormData
     Object.keys(formData).forEach((key) => {
       if (formData[key]) {
@@ -46,7 +46,7 @@ function Customer() {
       const url = `${backendURL}/NewJobSheet/NewJobSheet`;
       const response = await axios.post(url, data, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
       MySwal.fire({
@@ -69,7 +69,7 @@ function Customer() {
         assignedTechnician: "",
         deadline: "",
         estimatedAmount: "",
-        status: ""
+        status: "",
       });
 
       console.log(response.data);
@@ -80,8 +80,8 @@ function Customer() {
 
   return (
     <>
-      <div className="row">
-        <div className="col-md-7 col-lg-7 col-10 register-right">
+      <div className="container mt-1 d-flex justify-content-center align-items-center min-vh-100">
+        <div className="col-md-7 col-lg-7 col-10 shadow-lg p-4 bg-white rounded register-right">
           <div className="tab-content" id="myTabContent">
             <div
               className="tab-pane fade show active"
@@ -89,12 +89,14 @@ function Customer() {
               role="tabpanel"
               aria-labelledby="home-tab"
             >
-              <h3 className="register-heading text-center">New Job Sheet Form</h3>
+              <h4 className="register-heading text-center mb-4">
+                New Job Sheet Form
+              </h4>
               <form onSubmit={handlSubmit} noValidate>
                 <div className="row register-form">
-                  <div className="col-md-8">
+                  <div className="col-md-12">
                     <div className="form-group">
-                      <label htmlFor="clientId">Client ID</label>
+                      <label htmlFor="clientId fs-5">Client ID</label>
                       <input
                         className="form-control mb-3"
                         type="text"
@@ -105,7 +107,9 @@ function Customer() {
                         onChange={handleChange}
                         required
                       />
-                      {error.clientId && <span className="text-danger">{error.clientId}</span>}
+                      {error.clientId && (
+                        <span className="text-danger">{error.clientId}</span>
+                      )}
                     </div>
 
                     <div className="form-group">
@@ -120,7 +124,9 @@ function Customer() {
                         onChange={handleChange}
                         required
                       />
-                      {error.clientName && <span className="text-danger">{error.clientName}</span>}
+                      {error.clientName && (
+                        <span className="text-danger">{error.clientName}</span>
+                      )}
                     </div>
 
                     <div className="form-group">
@@ -135,7 +141,9 @@ function Customer() {
                         onChange={handleChange}
                         required
                       />
-                      {error.contactInfo && <span className="text-danger">{error.contactInfo}</span>}
+                      {error.contactInfo && (
+                        <span className="text-danger">{error.contactInfo}</span>
+                      )}
                     </div>
 
                     <div className="form-group">
@@ -152,7 +160,9 @@ function Customer() {
                     </div>
 
                     <div className="form-group">
-                      <label htmlFor="inventoryReceived">Inventory Received</label>
+                      <label htmlFor="inventoryReceived">
+                        Inventory Received
+                      </label>
                       <input
                         type="text"
                         className="form-control mb-3"
@@ -213,7 +223,9 @@ function Customer() {
                     </div>
 
                     <div className="form-group">
-                      <label htmlFor="assignedTechnician">Assigned Technician</label>
+                      <label htmlFor="assignedTechnician">
+                        Assigned Technician
+                      </label>
                       <input
                         type="text"
                         className="form-control mb-3"
@@ -270,7 +282,10 @@ function Customer() {
                       </select>
                     </div>
 
-                    <button className="btn btn-primary btn-lg w-full text-center" type="submit">
+                    <button
+                      className="btn btn-primary btn-lg w-100 text-center mt-4"
+                      type="submit"
+                    >
                       Save Job Sheet
                     </button>
                   </div>
